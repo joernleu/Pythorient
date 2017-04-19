@@ -10,6 +10,8 @@ from OIM_Mapping.identify_GBs import identify_GBs,identify_Sigma_GBs
 from OIM_Mapping.identify_TJs import identify_TJs,identify_Sigma_TJs
 from OIM_Mapping.plot_hex_map import plot_hex_map,plot_hex_rgb_map, plot_line_map
 from OIM_Mapping.point_densities import grid_density_gaussian_filter,grid_density_boxsum
+
+
 ## Import .ang file with grain ID
 #-------------------------------------------------------------
 
@@ -119,10 +121,7 @@ for m in range(len(path)):
     ax.set_xlim([0, view_xmax])
     ax.set_ylim([0, view_ymax])
     plt.gca().invert_yaxis()
-    # plot only 3-3-G and 3-3-9 Triple junctions
-    #IQ map
     alpha_val = 0.5
-    #plot_hex_map(fig,ax,alpha_val,IQ,verts, title=str(IQ))
     x_TJ = []
     y_TJ = []
     for i in ['3']:
@@ -133,9 +132,8 @@ for m in range(len(path)):
     ## view area range
     density = 512
     zd = grid_density_gaussian_filter(view_xmin, view_ymin, view_xmax, view_ymax, density, density, zip(x_TJ, y_TJ))
-    ##zd = grid_density_boxsum(view_xmin, view_ymin, view_xmax, view_ymax, density, density, zip(x_g, y_g))
+    #zd = grid_density_boxsum(view_xmin, view_ymin, view_xmax, view_ymax, density, density, zip(x_g, y_g))
     plt.imshow(zd , origin='lower', extent=[view_xmin, view_xmax, view_ymin, view_ymax])
-    #
     plt.savefig(path[m] + 'triple_out/Triple_junction_density.png',bbox_inches=0,pad_inches=0, dpi=900,transparent=True)
     
     # plot general GBs
@@ -155,12 +153,12 @@ for m in range(len(path)):
         col += 1
 
 
-    #for i in range(len(General_TJ_data[0])):
-    #    plt.plot(verts[General_TJ_data[0][i]][General_TJ_data[2][i],0],
-    #            verts[General_TJ_data[0][i]][General_TJ_data[2][i],1],
-    #            '^k',
-    #            markeredgecolor= 'k',
-    #            markersize=TJ_markersize)
+    for i in range(len(Data_TJ['General_TJ'][0])):
+        plt.plot(verts[Data_TJ['General_TJ'][0][i]][Data_TJ['General_TJ'][2][i],0],
+                verts[Data_TJ['General_TJ'][0][i]][Data_TJ['General_TJ'][2][i],1],
+                '^k',
+                markeredgecolor= 'k',
+                markersize=TJ_markersize)
     
     col = 0    
     for i in ['3', '33', '339']:

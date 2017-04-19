@@ -4,7 +4,7 @@ from Crystal_Calc.get_sigma_variants_crit import get_sigma_variants_crit
 from Crystal_Calc.crystallographic_calculations import rotmat2misor_angle
 from Crystal_Calc.get_symmetry_group import *
 
-def identify_GBs(Grain_ID,NROWS,NCOLS_EVEN,NCOLS_ODD):
+def identify_GBs(Data_GB, Grain_ID, NROWS, NCOLS_EVEN, NCOLS_ODD):
     NCOLS_EVEN_ODD = NCOLS_EVEN+NCOLS_ODD
     NCOLS_EVEN_EVEN = NCOLS_EVEN+NCOLS_EVEN
     if NROWS%2 == 1:
@@ -65,8 +65,9 @@ def identify_GBs(Grain_ID,NROWS,NCOLS_EVEN,NCOLS_ODD):
                     GB_point_ID.append(i)
                     GB_neighbor_ID.append(i+neighbor_direction[i][k])
                     GB_vert_ID.append(boundaries[i][k])
-    #                      
-    return [GB_point_ID,GB_neighbor_ID, GB_vert_ID]
+    
+    Data_GB['General_GB'] = [GB_point_ID,GB_neighbor_ID, GB_vert_ID]
+    
 
 
 def get_disorientation(boundary_point,neighbor_point,phi1,Phi,phi2):
@@ -75,12 +76,13 @@ def get_disorientation(boundary_point,neighbor_point,phi1,Phi,phi2):
     g = g_point * g_neighbor.transpose()
     return g
 
-def identify_Sigma_GBs(Sigma_CSL, crit, crystal_sys, Bravais_lattice, phi1, Phi, phi2, GB_data):
+def identify_Sigma_GBs(Data_GB, Sigma_CSL, crit, crystal_sys, Bravais_lattice, phi1, Phi, phi2):
     Symmetry_group = get_symmetry_group('Cubic') 
     Sigma_variants, Brandon_crit = get_sigma_variants_crit(Sigma_CSL, crit, crystal_sys, Bravais_lattice)
     Sigma_GB_point_ID = []
     Sigma_GB_neighbor_ID = []
-    Sigma_GB_vert_ID = []        
+    Sigma_GB_vert_ID = []
+    GB_data = Data_GB['General_GB']
     for i in  range(len(GB_data[0])):
         g = get_disorientation(GB_data[0][i],GB_data[1][i],phi1,Phi,phi2)           
         for n in Sigma_variants:            
@@ -92,4 +94,5 @@ def identify_Sigma_GBs(Sigma_CSL, crit, crystal_sys, Bravais_lattice, phi1, Phi,
                 Sigma_GB_neighbor_ID.append(GB_data[1][i])
                 Sigma_GB_vert_ID.append(GB_data[2][i])
                 break
-    return Sigma_GB_point_ID,Sigma_GB_neighbor_ID, Sigma_GB_vert_ID
+    
+    Data_GB[Sigma_CSL] = [Sigma_GB_point_ID, Sigma_GB_neighbor_ID, Sigma_GB_vert_ID] 

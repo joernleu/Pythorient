@@ -36,66 +36,72 @@ for m in range(len(path)):
     #-------------------------------------------------------------
     Sigma_boundary = ['3','9']
     GB_color = ['y','r']
-    GB_linewidth =1*YSTEP**0.5
-    Triple_junction = [['3','3','9']]
-    TJ_color =['g','y','r']
-    TJ_marker =['>','<','v']
-    TJ_markersize = 5*YSTEP**0.5
+    GB_linewidth = 1 * YSTEP**0.5
+    Triple_junction = [['3', '3', '9']]
+    TJ_color = ['g', 'y', 'r']
+    TJ_marker = ['>', '<', 'v']
+    TJ_markersize = 5 * YSTEP**0.5
     
+    
+    Data_GB = {}
     ## General boundaries 
     #---------------------------------------
-    General_GB_data = identify_GBs(Grain_ID,NROWS,NCOLS_EVEN,NCOLS_ODD)
+    identify_GBs(Data_GB, Grain_ID, NROWS, NCOLS_EVEN, NCOLS_ODD)
     #print(General_GB_data[0])
     
     ## CSL Sigma boundaries
     ##---------------------------------------
-    Sigma_GB_data =[]
+    
     for i in Sigma_boundary:
-        Sigma_GB_data.append(identify_Sigma_GBs(i,
-                                                'Brandon',
-                                                crystal_sys,
-                                                Bravais_lattice,
-                                                phi1, Phi, phi2,
-                                                General_GB_data))
+        identify_Sigma_GBs(Data_GB,
+                            i,
+                            'Brandon',
+                            crystal_sys,
+                            Bravais_lattice,
+                            phi1, Phi, phi2)
     
     
     ## Determine and plot general and CSL triple Junctions
     #-------------------------------------------------------------
-    
+    Data_TJ = {}
     ## General triple junctions
     #---------------------------------------
-    General_TJ_data = identify_TJs(Grain_ID,General_GB_data,NCOLS_ODD,NCOLS_EVEN)
+    identify_TJs(Data_GB, Data_TJ, Grain_ID, NCOLS_ODD, NCOLS_EVEN)
     ## CSL Sigma triple junctions
     #---------------------------------------
-    Sigma_TJ_data = []
     for i in Triple_junction:
-        Sigma_TJ_data.append(identify_Sigma_TJs(i,
-                                                'Brandon',
-                                                crystal_sys,
-                                                Bravais_lattice,
-                                                phi1, Phi, phi2,
-                                                General_TJ_data))
+        identify_Sigma_TJs(Data_GB,
+                            Data_TJ,
+                            i,
+                            'Brandon',
+                            crystal_sys,
+                            Bravais_lattice,
+                            phi1, Phi, phi2)
+
     
+    for px in Data_GB:
+            print(Data_GB.keys())
+    for px in Data_TJ:
+            print(Data_TJ.keys())
     ### Export
-    ##-------------------------------------------------------------
-    no_General_GBs = len(General_GB_data[0])
-    write_GB_data(General_GB_data,'General', path[m])
-    write_GB_stats(General_GB_data,no_General_GBs,'General', path[m])
+    no_General_GBs = len(Data_GB['General_GB'][0])
+    write_GB_data(Data_GB, 'General_GB', path[m])
+    write_GB_stats(Data_GB, no_General_GBs,'General_GB', path[m])
     
     for i in range(len(Sigma_boundary)):
-        write_GB_data(Sigma_GB_data[i],Sigma_boundary[i], path[m])
-        write_GB_stats(Sigma_GB_data[i],no_General_GBs,Sigma_boundary[i], path[m])
+        write_GB_data(Data_GB,Sigma_boundary[i], path[m])
+        write_GB_stats(Data_GB,no_General_GBs,Sigma_boundary[i], path[m])
     
-    no_General_TJs = len(General_TJ_data[0])
-    write_TJ_data(General_TJ_data,'General', path[m])
-    write_TJ_stats(General_TJ_data,no_General_TJs,'General', path[m]) 
+    no_General_TJs = len(Data_TJ['General_TJ'][0])
+    write_TJ_data(Data_TJ, 'General_TJ', path[m])
+    write_TJ_stats(Data_TJ, no_General_TJs, 'General_TJ', path[m]) 
     
     for i in range(len(Triple_junction)):
-        for n in range(len(Sigma_TJ_data[i])):        
+        for n in range(len(Triple_junction[i])):        
             Triple = Triple_junction[i][0:n+1]
-            Triple ='-'.join(Triple)
-            write_TJ_data(Sigma_TJ_data[i][n],Triple,path[m])
-            write_TJ_stats(Sigma_TJ_data[i][n],no_General_TJs,Triple,path[m])
+            Triple =''.join(Triple)
+            write_TJ_data(Data_TJ, Triple, path[m])
+            write_TJ_stats(Data_TJ, no_General_TJs, Triple,path[m])
     
 
     ## IQ or other color coded map
@@ -119,11 +125,10 @@ for m in range(len(path)):
     #plot_hex_map(fig,ax,alpha_val,IQ,verts, title=str(IQ))
     x_TJ = []
     y_TJ = []
-    for i in range(len(Sigma_TJ_data)):
-            for p in range(len(Sigma_TJ_data[i])):
-                    for n in range(len(Sigma_TJ_data[i][p][0])):
-                        x_TJ.append(verts[Sigma_TJ_data[i][p][0][n]][Sigma_TJ_data[i][p][2][n],0])
-                        y_TJ.append(verts[Sigma_TJ_data[i][p][0][n]][Sigma_TJ_data[i][p][2][n],1])
+    for i in ['3']:
+        for n in range(len(Data_TJ[i][0])):
+             x_TJ.append(verts[Data_TJ[i][0][n]][Data_TJ[i][2][n],0])
+             y_TJ.append(verts[Data_TJ[i][0][n]][Data_TJ[i][2][n],1])
                         
     ## view area range
     density = 512
@@ -133,22 +138,23 @@ for m in range(len(path)):
     #
     plt.savefig(path[m] + 'triple_out/Triple_junction_density.png',bbox_inches=0,pad_inches=0, dpi=900,transparent=True)
     
-    
+    # plot general GBs
     xy_GB = []
+    for n in range(len(Data_GB['General_GB'][0])):
+        xy_GB.append(verts[Data_GB['General_GB'][0][n]][Data_GB['General_GB'][2][n],:])
+    plot_line_map(xy_GB, ax,'k',GB_linewidth)
     
-    for n in range(len(General_GB_data[0])):
-        xy_GB.append(verts[General_GB_data[0][n]][General_GB_data[2][n],:])
-    plot_line_map(xy_GB,ax,'k',GB_linewidth)
-    #
+    
     legend_names_GB = ['General GB','$\Sigma$3 GB','$\Sigma$9 GB']
-    for i in range(len(Sigma_GB_data)):
+    col = 0
+    for i in Sigma_boundary:
         xy_GB = []
-        for n in range(len(Sigma_GB_data[i][0])):
-            xy_GB.append(verts[Sigma_GB_data[i][0][n]][Sigma_GB_data[i][2][n],:])
-        plot_line_map(xy_GB,ax,GB_color[i],GB_linewidth)
-    #
-    #for i in range(len(General_TJ_data)):
-    # #   for n in range(len(General_TJ_data[i])):
+        for n in range(len(Data_GB[i][0])):
+            xy_GB.append(verts[Data_GB[i][0][n]][Data_GB[i][2][n],:])
+        plot_line_map(xy_GB,ax,GB_color[col],GB_linewidth)
+        col += 1
+
+
     #for i in range(len(General_TJ_data[0])):
     #    plt.plot(verts[General_TJ_data[0][i]][General_TJ_data[2][i],0],
     #            verts[General_TJ_data[0][i]][General_TJ_data[2][i],1],
@@ -156,15 +162,14 @@ for m in range(len(path)):
     #            markeredgecolor= 'k',
     #            markersize=TJ_markersize)
     
-        
-    for i in range(len(Sigma_TJ_data)):
-            for p in range(len(Sigma_TJ_data[i])):
-                    for n in range(len(Sigma_TJ_data[i][p][0])):
-                        plt.plot(verts[Sigma_TJ_data[i][p][0][n]][Sigma_TJ_data[i][p][2][n],0],
-                                 verts[Sigma_TJ_data[i][p][0][n]][Sigma_TJ_data[i][p][2][n],1],
-                                 TJ_color[p]+TJ_marker[p],
-                                 markeredgecolor= TJ_color[p],
+    col = 0    
+    for i in ['3', '33', '339']:
+        for n in range(len(Data_TJ[i][0])):
+            plt.plot(verts[Data_TJ[i][0][n]][Data_TJ[i][2][n],0],
+                                 verts[Data_TJ[i][0][n]][Data_TJ[i][2][n],1],
+                                 TJ_color[col]+TJ_marker[col],
+                                 markeredgecolor= TJ_color[col],
                                  markersize=TJ_markersize)
-    
+        col += 1
 
     plt.savefig(path[m] + 'triple_out/Triple_junction_map.png',bbox_inches=0,pad_inches=0, dpi=1200,transparent=True)

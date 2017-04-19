@@ -177,7 +177,7 @@ def rotmat2misor_axisangle(rotmat, Symmetry_group):
     
     min_idx = 1
     p_min = 1
-    
+    # The highest uvw value is chosen to be 20
     for i in range(1, 20, 1):
         omega_2 = [r * i for r in  omega]
         p = abs(omega_2[0] - round(omega_2[0]))

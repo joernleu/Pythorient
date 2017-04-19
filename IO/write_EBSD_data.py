@@ -24,7 +24,8 @@ def write_to_hex_ang(my_file, Conv_file,XSTEP,YSTEP, NCOLS_ODD, NCOLS_EVEN, NROW
 
 
     
-def write_GB_data(GB_data,Sigma_name, path):
+def write_GB_data(Data,Sigma_name, path):
+    GB_data = Data[Sigma_name]
     GB_vert_ID_1 = [item[0] for item in GB_data[2]]
     GB_vert_ID_2 = [item[1] for item in GB_data[2]]
     data = np.column_stack((GB_data[0], GB_data[1],GB_vert_ID_1,GB_vert_ID_2))
@@ -37,7 +38,8 @@ def write_GB_data(GB_data,Sigma_name, path):
     outfile.close()
     
 
-def write_TJ_data(TJ_data,Sigma_name, path):
+def write_TJ_data(Data, Sigma_name, path):
+    TJ_data = Data[Sigma_name]
     TJ_neighbor_ID1 = [item[0] for item in TJ_data[1]]
     TJ_neighbor_ID2 = [item[1] for item in TJ_data[1]]
     data = np.column_stack((TJ_data[0], TJ_neighbor_ID1,TJ_neighbor_ID2,TJ_data[2]))
@@ -50,7 +52,8 @@ def write_TJ_data(TJ_data,Sigma_name, path):
     outfile.close()
 
 
-def write_GB_stats(GB_data,no_General_GBs,Sigma_name, path):
+def write_GB_stats(Data, no_General_GBs, Sigma_name, path):
+    GB_data = Data[Sigma_name]
     no_GBs = float(len(GB_data[0]))
     frac_GBs = no_GBs/no_General_GBs
     data = [no_GBs,frac_GBs]
@@ -60,7 +63,8 @@ def write_GB_stats(GB_data,no_General_GBs,Sigma_name, path):
     outfile.write('\n')
     outfile.close()
 
-def write_TJ_stats(TJ_data,no_General_TJs,Sigma_name, path):
+def write_TJ_stats(Data, no_General_TJs, Sigma_name, path):
+    TJ_data = Data[Sigma_name]
     no_TJs = float(len(TJ_data[0]))
     frac_TJs = no_TJs/no_General_TJs
     data = [no_TJs,frac_TJs]

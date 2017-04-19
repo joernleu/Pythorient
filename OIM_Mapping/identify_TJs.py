@@ -4,10 +4,11 @@ from Crystal_Calc.get_sigma_variants_crit import get_sigma_variants_crit
 from Crystal_Calc.crystallographic_calculations import rotmat2misor_angle
 from Crystal_Calc.get_symmetry_group import *
 
-def identify_TJs(Grain_ID,GB_data,NCOLS_ODD,NCOLS_EVEN):
+def identify_TJs(Data_GB, Data_TJ, Grain_ID, NCOLS_ODD, NCOLS_EVEN):
     TJ_point_ID = []
     TJ_neighbor_ID = []
     TJ_vert_ID = []
+    GB_data = Data_GB['General_GB']
     for i in range(len(GB_data[0])-1):
         if ((GB_data[0][i] == GB_data[0][i + 1])
             and (Grain_ID[GB_data[0][i]] != Grain_ID[GB_data[1][i]])
@@ -16,11 +17,9 @@ def identify_TJs(Grain_ID,GB_data,NCOLS_ODD,NCOLS_EVEN):
             and (GB_data[1][i+1]-GB_data[1][i] == NCOLS_EVEN
                  or GB_data[1][i]-GB_data[1][i+1] == 1)):   
                     TJ_point_ID.append(GB_data[0][i])
-                    TJ_neighbor_ID.append([GB_data[1][i],GB_data[1][i+1]])
+                    TJ_neighbor_ID.append([GB_data[1][i], GB_data[1][i+1]])
                     TJ_vert_ID.append(GB_data[2][i][0])
-
-    #neighbors = [i for i in neighbor_direction]
-    return TJ_point_ID, TJ_neighbor_ID, TJ_vert_ID
+    Data_TJ['General_TJ'] = [TJ_point_ID, TJ_neighbor_ID, TJ_vert_ID]
 
 
 def get_disorientation_trip(triple_point,neighbor_point,phi1,Phi,phi2):
@@ -32,12 +31,14 @@ def get_disorientation_trip(triple_point,neighbor_point,phi1,Phi,phi2):
     g3 = g_neighbor1 *g_neighbor2.transpose()
     return [g1,g2,g3]
 
-def identify_Sigma_TJs(Triple_junction,
+def identify_Sigma_TJs(Data_GB,
+                       Data_TJ,
+                       Triple_junction,
                        crit,
                        crystal_sys,
                        Bravais_lattice,
-                       phi1, Phi, phi2,
-                       TJ_data):
+                       phi1, Phi, phi2):
+    
     Symmetry_group = get_symmetry_group(crystal_sys)
     Sigma_variants_crit = []
     for i in Triple_junction:
@@ -55,7 +56,7 @@ def identify_Sigma_TJs(Triple_junction,
     Sigma_Sigma_Sigma_TJ_neighbor_ID = []
     Sigma_Sigma_Sigma_TJ_vert_ID = []
     
-    
+    TJ_data = Data_TJ['General_TJ']
     for i in  range(len(TJ_data[0])):
         g = get_disorientation_trip(TJ_data[0][i],TJ_data[1][i],phi1,Phi,phi2)
         tj = []
@@ -87,7 +88,7 @@ def identify_Sigma_TJs(Triple_junction,
                 Sigma_Sigma_Sigma_TJ_point_ID.append(TJ_data[0][i])
                 Sigma_Sigma_Sigma_TJ_neighbor_ID.append(TJ_data[1][i])
                 Sigma_Sigma_Sigma_TJ_vert_ID.append(TJ_data[2][i])
-                
-    return ([Sigma_TJ_point_ID, Sigma_TJ_neighbor_ID, Sigma_TJ_vert_ID],
-            [Sigma_Sigma_TJ_point_ID, Sigma_Sigma_TJ_neighbor_ID, Sigma_Sigma_TJ_vert_ID],
-            [Sigma_Sigma_Sigma_TJ_point_ID,  Sigma_Sigma_Sigma_TJ_neighbor_ID, Sigma_Sigma_Sigma_TJ_vert_ID])
+    
+    Data_TJ[Triple_junction[0]] = [Sigma_TJ_point_ID, Sigma_TJ_neighbor_ID, Sigma_TJ_vert_ID]            
+    Data_TJ[Triple_junction[0] + Triple_junction[1]] = [Sigma_Sigma_TJ_point_ID, Sigma_Sigma_TJ_neighbor_ID, Sigma_Sigma_TJ_vert_ID]
+    Data_TJ[Triple_junction[0] + Triple_junction[1] + Triple_junction[2]] = [Sigma_Sigma_Sigma_TJ_point_ID,  Sigma_Sigma_Sigma_TJ_neighbor_ID, Sigma_Sigma_Sigma_TJ_vert_ID]

@@ -27,11 +27,11 @@ def triple_out(path, ang_file, crystal_sys = 'Cubic', Bravais_lattice = 'fcc'):
     '''Select CSL GBs and TJs and plot parameters'''    
     Sigma_boundary = ['3', '9']
     GB_color = ['y', 'r']
-    GB_linewidth = 1 * YSTEP**0.5
+    GB_linewidth = 1*YSTEP**0.5
     Triple_junction = [['3', '3', '9']]
     TJ_color = ['g', 'y', 'r']
     TJ_marker = ['>', '<', 'v']
-    TJ_markersize = 5 * YSTEP**0.5
+    TJ_markersize = 5*YSTEP**0.5
     
     ''' Identify General and CSL GBs'''
     Data_GB = {}
@@ -158,7 +158,7 @@ def triple_out(path, ang_file, crystal_sys = 'Cubic', Bravais_lattice = 'fcc'):
 
 
 if __name__ == '__main__':
-    '''Put folders and files here'''
+    '''Put folders and files for batch processing here'''
     path = ['Test_Files/200_hexagonal_cells_rand_twin_distr/']
     ang_file =['test_grain.ang']
     crystal_sys = 'Cubic'

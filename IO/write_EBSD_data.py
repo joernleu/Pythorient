@@ -23,7 +23,6 @@ def write_to_hex_ang(my_file, Conv_file,XSTEP,YSTEP, NCOLS_ODD, NCOLS_EVEN, NROW
     f2.close()
 
 
-    
 def write_GB_data(Data,Sigma_name, path):
     GB_data = Data[Sigma_name]
     GB_vert_ID_1 = [item[0] for item in GB_data[2]]

@@ -87,7 +87,7 @@ def identify_Sigma_GBs(Data_GB, Sigma_CSL, crit, crystal_sys, Bravais_lattice, p
         g = get_disorientation(GB_data[0][i],GB_data[1][i],phi1,Phi,phi2)           
         for n in Sigma_variants:            
             #x_trace = [x.trace() for x in rotmat_sym]    
-            Theta = rotmat2misor_angle( g * n.transpose(),Symmetry_group)
+            Theta = rotmat2misor_angle( g * n.transpose(), Symmetry_group)
             #print(Theta)
             if Theta < Brandon_crit:
                 Sigma_GB_point_ID.append(GB_data[0][i])                

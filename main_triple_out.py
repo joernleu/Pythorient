@@ -13,27 +13,25 @@ from OIM_Mapping.plot_hex_map import plot_hex_map,plot_hex_rgb_map, plot_line_ma
 from OIM_Mapping.point_densities import grid_density_gaussian_filter,grid_density_boxsum
 
 
-## Import .ang file with grain ID
-#-------------------------------------------------------------
+
 
 
     
 def triple_out(path, ang_file, crystal_sys = 'Cubic', Bravais_lattice = 'fcc'):    
-    my_file =path + ang_file
+    
+    '''Import OIM files and create outpu folder'''
     
     if not os.path.exists(path+'triple_out/'):
         os.makedirs(path+'triple_out/')
     
-    
+    my_file =path + ang_file
     headerlines, phi1, Phi, phi2, x, y, IQ, CI, Fit, Grain_ID, edge, phase = read_data_hex_ang(my_file)
     XSTEP,YSTEP, NCOLS_ODD, NCOLS_EVEN, NROWS = det_Step_Size(x,y)
     verts = get_verts(x,y,YSTEP)
 
+        
+    '''Select CSL GBs and TJs and plot parameters'''
     
-    
-    
-    ## Determine and plot general and CSL boundaries
-    #-------------------------------------------------------------
     Sigma_boundary = ['3', '9']
     GB_color = ['y', 'r']
     GB_linewidth = 1 * YSTEP**0.5
@@ -42,15 +40,10 @@ def triple_out(path, ang_file, crystal_sys = 'Cubic', Bravais_lattice = 'fcc'):
     TJ_marker = ['>', '<', 'v']
     TJ_markersize = 5 * YSTEP**0.5
     
+    ''' Identify General and CSL GBs'''
     
     Data_GB = {}
-    ## General boundaries 
-    #---------------------------------------
     identify_GBs(Data_GB, Grain_ID, NROWS, NCOLS_EVEN, NCOLS_ODD)
-    #print(General_GB_data[0])
-    
-    ## CSL Sigma boundaries
-    ##---------------------------------------
     
     for i in Sigma_boundary:
         identify_Sigma_GBs(Data_GB,
@@ -61,14 +54,11 @@ def triple_out(path, ang_file, crystal_sys = 'Cubic', Bravais_lattice = 'fcc'):
                             phi1, Phi, phi2)
     
     
-    ## Determine and plot general and CSL triple Junctions
-    #-------------------------------------------------------------
-    Data_TJ = {}
-    ## General triple junctions
-    #---------------------------------------
+    ''' Identify General and CSL TJs'''
+    
+    Data_TJ = {}    
     identify_TJs(Data_GB, Data_TJ, Grain_ID, NCOLS_ODD, NCOLS_EVEN)
-    ## CSL Sigma triple junctions
-    #---------------------------------------
+
     for i in Triple_junction:
         identify_Sigma_TJs(Data_GB,
                             Data_TJ,
@@ -79,11 +69,8 @@ def triple_out(path, ang_file, crystal_sys = 'Cubic', Bravais_lattice = 'fcc'):
                             phi1, Phi, phi2)
 
     
-    for px in Data_GB:
-            print(Data_GB.keys())
-    for px in Data_TJ:
-            print(Data_TJ.keys())
-    ### Export
+    '''Export GB data and statistics'''
+    
     no_General_GBs = len(Data_GB['General_GB'][0])
     write_GB_data(Data_GB, 'General_GB', path)
     write_GB_stats(Data_GB, no_General_GBs,'General_GB', path)
@@ -92,6 +79,7 @@ def triple_out(path, ang_file, crystal_sys = 'Cubic', Bravais_lattice = 'fcc'):
         write_GB_data(Data_GB,Sigma_boundary[i], path)
         write_GB_stats(Data_GB,no_General_GBs,Sigma_boundary[i], path)
     
+    '''Export TJ data and statistics'''
     no_General_TJs = len(Data_TJ['General_TJ'][0])
     write_TJ_data(Data_TJ, 'General_TJ', path)
     write_TJ_stats(Data_TJ, no_General_TJs, 'General_TJ', path) 
@@ -104,8 +92,8 @@ def triple_out(path, ang_file, crystal_sys = 'Cubic', Bravais_lattice = 'fcc'):
             write_TJ_stats(Data_TJ, no_General_TJs, Triple,path)
     
 
-    ## IQ or other color coded map
-    #------------------------------
+    
+    '''Plot density map from selected TJs'''
     fig = plt.figure()
     view_ymin = 0
     view_ymax = max(y)
@@ -134,7 +122,7 @@ def triple_out(path, ang_file, crystal_sys = 'Cubic', Bravais_lattice = 'fcc'):
     plt.imshow(zd ,cmap=cm.gray, origin='lower', extent=[view_xmin, view_xmax, view_ymin, view_ymax])
     plt.colorbar(shrink=.5)
     
-    # plot general GBs
+    '''Plot GBs'''
     xy_GB = []
     for n in range(len(Data_GB['General_GB'][0])):
         xy_GB.append(verts[Data_GB['General_GB'][0][n]][Data_GB['General_GB'][2][n],:])
@@ -150,7 +138,7 @@ def triple_out(path, ang_file, crystal_sys = 'Cubic', Bravais_lattice = 'fcc'):
         plot_line_map(xy_GB,ax,GB_color[col], GB_linewidth, legend_names_GB[col])
         col += 1
 
-
+    '''Plot TJs'''
     for i in range(len(Data_TJ['General_TJ'][0])):
         plt.plot(verts[Data_TJ['General_TJ'][0][i]][Data_TJ['General_TJ'][2][i],0],
                 verts[Data_TJ['General_TJ'][0][i]][Data_TJ['General_TJ'][2][i],1],
@@ -176,6 +164,8 @@ def triple_out(path, ang_file, crystal_sys = 'Cubic', Bravais_lattice = 'fcc'):
         col += 1
     
     plt.legend(loc = 1,framealpha = 1, numpoints = 1,prop={'size':6})
+    
+    '''Save the Plot'''
     plt.savefig(path + 'triple_out/Triple_junction_map.png',bbox_inches=0,pad_inches=0, dpi=1200,transparent=True)
 
 

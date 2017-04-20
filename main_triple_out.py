@@ -12,15 +12,9 @@ from OIM_Mapping.identify_TJs import identify_TJs,identify_Sigma_TJs
 from OIM_Mapping.plot_hex_map import plot_hex_map,plot_hex_rgb_map, plot_line_map
 from OIM_Mapping.point_densities import grid_density_gaussian_filter,grid_density_boxsum
 
-
-
-
-
-    
 def triple_out(path, ang_file, crystal_sys = 'Cubic', Bravais_lattice = 'fcc'):    
     
-    '''Import OIM files and create outpu folder'''
-    
+    '''Import OIM files and create outpu folder'''    
     if not os.path.exists(path+'triple_out/'):
         os.makedirs(path+'triple_out/')
     
@@ -30,8 +24,7 @@ def triple_out(path, ang_file, crystal_sys = 'Cubic', Bravais_lattice = 'fcc'):
     verts = get_verts(x,y,YSTEP)
 
         
-    '''Select CSL GBs and TJs and plot parameters'''
-    
+    '''Select CSL GBs and TJs and plot parameters'''    
     Sigma_boundary = ['3', '9']
     GB_color = ['y', 'r']
     GB_linewidth = 1 * YSTEP**0.5
@@ -41,7 +34,6 @@ def triple_out(path, ang_file, crystal_sys = 'Cubic', Bravais_lattice = 'fcc'):
     TJ_markersize = 5 * YSTEP**0.5
     
     ''' Identify General and CSL GBs'''
-    
     Data_GB = {}
     identify_GBs(Data_GB, Grain_ID, NROWS, NCOLS_EVEN, NCOLS_ODD)
     
@@ -54,8 +46,7 @@ def triple_out(path, ang_file, crystal_sys = 'Cubic', Bravais_lattice = 'fcc'):
                             phi1, Phi, phi2)
     
     
-    ''' Identify General and CSL TJs'''
-    
+    ''' Identify General and CSL TJs'''    
     Data_TJ = {}    
     identify_TJs(Data_GB, Data_TJ, Grain_ID, NCOLS_ODD, NCOLS_EVEN)
 
@@ -69,8 +60,7 @@ def triple_out(path, ang_file, crystal_sys = 'Cubic', Bravais_lattice = 'fcc'):
                             phi1, Phi, phi2)
 
     
-    '''Export GB data and statistics'''
-    
+    '''Export GB data and statistics'''    
     no_General_GBs = len(Data_GB['General_GB'][0])
     write_GB_data(Data_GB, 'General_GB', path)
     write_GB_stats(Data_GB, no_General_GBs,'General_GB', path)
@@ -159,10 +149,8 @@ def triple_out(path, ang_file, crystal_sys = 'Cubic', Bravais_lattice = 'fcc'):
                                  TJ_color[col]+TJ_marker[col],
                                  markeredgecolor = TJ_color[col],
                                  markersize = TJ_markersize,
-                                 label = legend_names_TJ[col])
-        
+                                 label = legend_names_TJ[col])        
         col += 1
-    
     plt.legend(loc = 1,framealpha = 1, numpoints = 1,prop={'size':6})
     
     '''Save the Plot'''
@@ -170,6 +158,7 @@ def triple_out(path, ang_file, crystal_sys = 'Cubic', Bravais_lattice = 'fcc'):
 
 
 if __name__ == '__main__':
+    '''Put folders and files here'''
     path = ['Test_Files/200_hexagonal_cells_rand_twin_distr/']
     ang_file =['test_grain.ang']
     crystal_sys = 'Cubic'

@@ -85,8 +85,6 @@ def read_GB_data(my_file):
         headerlines += 1
     return GB_point_ID,GB_neighbor_ID, GB_vert_ID
     
-
-
 def read_TJ_data(my_file):
     f = open(my_file, 'r')
     for i,l in enumerate(f):
@@ -113,7 +111,7 @@ def read_TJ_data(my_file):
         break
         headerlines += 1
     return TJ_point_ID, TJ_neighbor_ID, TJ_vert_ID
-#
+
 def det_Step_Size(x,y):
     XSTEP = x[1]
     NCOLS_ODD = 0
@@ -123,5 +121,4 @@ def det_Step_Size(x,y):
     NCOLS_EVEN = NCOLS_ODD-1
     YSTEP = y[NCOLS_ODD+1]
     NROWS = round((2*len(x)+1)/(NCOLS_ODD+NCOLS_EVEN))
-    return XSTEP,YSTEP, NCOLS_ODD, NCOLS_EVEN, int(NROWS)
-        
+    return XSTEP,YSTEP, NCOLS_ODD, NCOLS_EVEN, int(NROWS)   

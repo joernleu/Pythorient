@@ -53,7 +53,7 @@ def get_ax_ang_CSL(Sigma_CSL, Bravais_lattice):
     return CSL_data[Sigma_CSL]
 
 
-def get_symmetry_group(crystal_sys, CSL_ax):
+def get_symmetry_group(crystal_sys, CSL_ax=None):
     if crystal_sys == 'Cubic':
         S1= np.matrix([[1, 0, 0],[0, 1, 0],[0, 0, 1]])
         S2= np.matrix([[-1, 0, 0],[0, 1, 0],[0, 0, -1]])
@@ -81,32 +81,28 @@ def get_symmetry_group(crystal_sys, CSL_ax):
         S24= np.matrix([[0, -1, 0],[1, 0, 0],[0, 0, 1]])
 
         if CSL_ax == '100':
-            return [S1,S2,S5,S6,S9,S10]
+            return [S1, S2, S5, S6, S9, S10]
         
         if CSL_ax == '110':
-            return [S1,S2,S3,S4,S5,S6,S7,S8,S9,S10,S11,S12]
+            return [S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12]
         
         if CSL_ax == '111':
-            return [S1,S2,S3,S4,S14,S15,S16,S17]
+            return [S1, S2, S3, S4, S14, S15, S16, S17]
         
         if CSL_ax == 'coh_twin':
-            return [S1,S14,S15,S16]
+            return [S1, S14, S15, S16]
         
         else:
-            return [S1,S2,S3,S4,S5,S6,S7,S8,
-                     S9,S10,S11,S12,S13,S14,S15,S16,
-                     S17,S18,S19,S20,S21,S22,S23,S24]
+            return [S1, S2, S3, S4, S5, S6, S7, S8,
+                     S9, S10, S11, S12, S13, S14, S15, S16,
+                     S17, S18, S19, S20, S21, S22, S23, S24]
 
 
 def get_sigma_variants_crit(Sigma_CSL, crit, crystal_sys, Bravais_lattice):
-    axis_angle_CSL = get_ax_ang_CSL(Sigma_CSL, Bravais_lattice)
-    
-    rot_mat = axisangle2rotmat(axis_angle_CSL[0],axis_angle_CSL[1:4])
-    
-    Symmetry_group = get_symmetry_group(crystal_sys, axis_angle_CSL[4])
-    
-    Sigma_variants = [rot_mat * x for x in Symmetry_group]
-    
+    axis_angle_CSL = get_ax_ang_CSL(Sigma_CSL, Bravais_lattice)    
+    rot_mat = axisangle2rotmat(axis_angle_CSL[0], axis_angle_CSL[1:4])    
+    Symmetry_group = get_symmetry_group(crystal_sys, axis_angle_CSL[4])    
+    Sigma_variants = [rot_mat * x for x in Symmetry_group]    
     if crit == 'Brandon':
         Brandon_Crit = 15.0/ axis_angle_CSL[5]**0.5
     return Sigma_variants, Brandon_Crit

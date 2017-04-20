@@ -11,8 +11,8 @@ def euler2rotmat(ang):
     sc = np.sin(ang[2])
     cc = np.cos(ang[2])
     
-    g1 = [ ca*cc - sa*sc*cb, sa*cc + ca*sc*cb,  sc*sb]
-    g2 = [ -ca*sc - sa*cc*cb, -sa*sc + ca*cc*cb, cc*sb]
+    g1 = [ca*cc - sa*sc*cb, sa*cc + ca*sc*cb,  sc*sb]
+    g2 = [-ca*sc - sa*cc*cb, -sa*sc + ca*cc*cb, cc*sb]
     g3 = [sa*sb, -ca*sb, cb]
     
     g = np.matrix([g1, g2, g3])
@@ -27,8 +27,8 @@ def axisangle2euler(axisangle):
     u = axisangle[1]/(axisangle[1]**2+axisangle[2]**2+axisangle[3]**2)**0.5
     v = axisangle[2]/(axisangle[1]**2+axisangle[2]**2+axisangle[3]**2)**0.5
     w = axisangle[3]/(axisangle[1]**2+axisangle[2]**2+axisangle[3]**2)**0.5
-    g1 = [ t*u*u + c, t*u*v - w*s,  t*u*w + v*s]
-    g2 = [ t*u*v + w*s, t*v*v + c, t*v*w - u*s]
+    g1 = [t*u*u + c, t*u*v - w*s,  t*u*w + v*s]
+    g2 = [t*u*v + w*s, t*v*v + c, t*v*w - u*s]
     g3 = [t*u*w - v*s, t*v*w + u*s, t*w*w + c]
     
     phi1 = np.arctan2(-(t*u*w - v*s), (t*v*w + u*s))
@@ -46,8 +46,8 @@ def axisangle2rotmat(angle,axis):
     u = axis[0]/(axis[0]**2+axis[1]**2+axis[2]**2)**0.5
     v = axis[1]/(axis[0]**2+axis[1]**2+axis[2]**2)**0.5
     w = axis[2]/(axis[0]**2+axis[1]**2+axis[2]**2)**0.5
-    g1 = [ t*u*u + c, t*u*v - w*s,  t*u*w + v*s]
-    g2 = [ t*u*v + w*s, t*v*v + c, t*v*w - u*s]
+    g1 = [t*u*u + c, t*u*v - w*s,  t*u*w + v*s]
+    g2 = [t*u*v + w*s, t*v*v + c, t*v*w - u*s]
     g3 = [t*u*w - v*s, t*v*w + u*s, t*w*w + c]
     
     g = np.matrix([g1, g2, g3])
@@ -58,10 +58,10 @@ def euler2miller(ang):
     h = np.sin(ang[1])*np.sin(ang[2])
     k = np.sin(ang[1])*np.cos(ang[2])
     l = np.cos(ang[1])
-    n = (h**2+k**2+l**2)**0.5
-    h= h*n
-    k= k*n
-    l= l*n
+    n = (h**2 + k**2 + l**2)**0.5
+    h= h * n
+    k= k * n
+    l= l * n
     
 
     hkl_max = max([abs(h),abs(k),abs(l)])
@@ -87,10 +87,10 @@ def euler2miller(ang):
     
     res  = 22.
     for i in range(1,22):
-        if res>(abs(round(h*i)-h*i)+abs(round(k*i)-k*i)+abs(round(l*i)-l*i)):
-            res=(abs(round(h*i)-h*i)+abs(round(k*i)-k*i)+abs(round(l*i)-l*i))
+        if res > (abs(round(h*i) - h*i)+abs(round(k*i) - k*i)+abs(round(l*i) - l*i)):
+            res = (abs(round(h*i) - h*i)+abs(round(k*i) - k*i)+abs(round(l*i) - l*i))
             i_max = i
-            if res<0.3:
+            if res < 0.3:
                 break
             
     h = h*i_max
@@ -99,8 +99,8 @@ def euler2miller(ang):
     
     res  = 22.
     for i in range(1,22):
-        if res>(abs(round(u*i)-u*i)+abs(round(v*i)-v*i)+abs(round(w*i)-w*i)):
-            res=(abs(round(u*i)-u*i)+abs(round(v*i)-v*i)+abs(round(w*i)-w*i))
+        if res > (abs(round(u*i) - u*i) + abs(round(v*i) - v*i) + abs(round(w*i) - w*i)):
+            res = (abs(round(u*i) - u*i)+abs(round(v*i) - v*i)+abs(round(w*i) - w*i))
             i_max = i
             if res<0.3:
                 break
@@ -117,10 +117,10 @@ def euler2miller(ang):
     w= round(w)
     
     
-    hukvlw =[h*u,k*v,l*w]
+    hukvlw =[h*u, k*v, l*w]
     i_max = 0
     for i in range(1,3):
-        if hukvlw[i]>hukvlw[i_max]:
+        if hukvlw[i] > hukvlw[i_max]:
             i_max = i
     
     while i:
@@ -128,7 +128,7 @@ def euler2miller(ang):
         if res == 0.0:
             break
             
-        if res == h and i_max==0:
+        if res == h and i_max == 0:
             u = u*i - 1
             v = v*i
             w = w*i
@@ -156,18 +156,18 @@ def ggt(x, y):
 
 
 def rotmat2misor_axisangle(rotmat, Symmetry_group):
-    rotmat_sym = [rotmat * x for x in Symmetry_group]
+    rotmat_sym = [rotmat*x for x in Symmetry_group]
     x_trace = [x.trace() for x in rotmat_sym]
     min_idx = 0
     
     for i in range(len(x_trace)):
-        if x_trace[min_idx]<x_trace[i]:
+        if x_trace[min_idx] < x_trace[i]:
             min_idx  = i
     
-    Theta = np.arccos(((x_trace[min_idx])-1)/2)
+    Theta = np.arccos(((x_trace[min_idx]) - 1)/2)
     
-    omega = (1/(2* np.sin(Theta))
-             * [rotmat_sym[min_idx][2,1] - rotmat_sym[min_idx][1,2],
+    omega = (1/(2*np.sin(Theta))
+             *[rotmat_sym[min_idx][2,1] - rotmat_sym[min_idx][1,2],
                 rotmat_sym[min_idx][0,2] - rotmat_sym[min_idx][2,0],
                 rotmat_sym[min_idx][1,0] - rotmat_sym[min_idx][0,1]])
     
@@ -179,7 +179,7 @@ def rotmat2misor_axisangle(rotmat, Symmetry_group):
     p_min = 1
     # The highest uvw value is chosen to be 20
     for i in range(1, 20, 1):
-        omega_2 = [r * i for r in  omega]
+        omega_2 = [r*i for r in  omega]
         p = abs(omega_2[0] - round(omega_2[0]))
         + abs(omega_2[1] - round(omega_2[1]))
         + abs(omega_2[2] - round(omega_2[2]))
@@ -196,15 +196,15 @@ def rotmat2misor_axisangle(rotmat, Symmetry_group):
 
 
 def rotmat2misor_angle(rotmat, Symmetry_group):
-    rotmat_sym = [rotmat * x for x in Symmetry_group]
+    rotmat_sym = [rotmat*x for x in Symmetry_group]
     x_trace = [x.trace() for x in rotmat_sym]
     min_idx = 0
     
     for i in range(len(x_trace)):
-        if x_trace[min_idx]<x_trace[i]:
-            min_idx  = i
+        if x_trace[min_idx] < x_trace[i]:
+            min_idx = i
     
-    Theta = np.arccos(((x_trace[min_idx])-1)/2)
+    Theta = np.arccos(((x_trace[min_idx]) - 1)/2)
     
     return Theta*180/np.pi
 

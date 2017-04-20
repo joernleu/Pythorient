@@ -20,7 +20,6 @@ def identify_TJs(Data_GB, Data_TJ, Grain_ID, NCOLS_ODD, NCOLS_EVEN):
                     TJ_vert_ID.append(GB_data[2][i][0])
     Data_TJ['General_TJ'] = [TJ_point_ID, TJ_neighbor_ID, TJ_vert_ID]
 
-
 def get_disorientation_trip(triple_point,neighbor_point,phi1,Phi,phi2):
     g_point  = euler2rotmat([phi1[triple_point ],Phi[triple_point],phi2[triple_point]])
     g_neighbor1 = euler2rotmat([phi1[neighbor_point[0]],Phi[neighbor_point[0]],phi2[neighbor_point[0]]])

@@ -109,7 +109,7 @@ def triple_out(path, ang_file, crystal_sys = 'Cubic', Bravais_lattice = 'fcc'):
     density = 512
     zd = grid_density_gaussian_filter(view_xmin, view_ymin, view_xmax, view_ymax, density, density, zip(x_TJ, y_TJ))
     #zd = grid_density_boxsum(view_xmin, view_ymin, view_xmax, view_ymax, density, density, zip(x_g, y_g))
-    plt.imshow(zd ,cmap=cm.gray, origin='lower', extent=[view_xmin, view_xmax, view_ymin, view_ymax])
+    plt.imshow(zd ,cmap=cm.Blues, origin='lower', extent=[view_xmin, view_xmax, view_ymin, view_ymax])
     plt.colorbar(shrink=.5)
     
     '''Plot GBs'''

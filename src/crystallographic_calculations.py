@@ -1,7 +1,11 @@
 import numpy as np
+from numba import jit
+
 
 # Euler angles in matrix representation
+@jit(nopython=True)
 def euler2rotmat(ang):
+    g = np.zeros((3, 3))
     sa = np.sin(ang[0])
     ca = np.cos(ang[0]) 
     sb = np.sin(ang[1])
@@ -9,11 +13,23 @@ def euler2rotmat(ang):
     sc = np.sin(ang[2])
     cc = np.cos(ang[2])
     
-    g1 = [ca*cc - sa*sc*cb, sa*cc + ca*sc*cb,  sc*sb]
-    g2 = [-ca*sc - sa*cc*cb, -sa*sc + ca*cc*cb, cc*sb]
-    g3 = [sa*sb, -ca*sb, cb]
+    g[0, 0] = ca*cc - sa*sc*cb
+    g[0, 1] = sa*cc + ca*sc*cb
+    g[0, 2] = sc*sb
+    g[1, 0] = -ca*sc - sa*cc*cb
+    g[1, 1] = -sa*sc + ca*cc*cb
+    g[1, 2] = cc*sb
+    g[2, 0] = sa*sb
+    g[2, 1] = -ca*sb
+    g[2, 2] = cb
+    #np.array([[ca*cc - sa*sc*cb, sa*cc + ca*sc*cb,  sc*sb],
+    #             [-ca*sc - sa*cc*cb, -sa*sc + ca*cc*cb, cc*sb],
+    #             [sa*sb, -ca*sb, cb]])
+    #g = np.array([[ca*cc - sa*sc*cb, sa*cc + ca*sc*cb,  sc*sb],
+    #             [-ca*sc - sa*cc*cb, -sa*sc + ca*cc*cb, cc*sb],
+    #             [sa*sb, -ca*sb, cb]])
     
-    g = np.matrix([g1, g2, g3])
+    #g = np.matrix([g1, g2, g3])
     return g
 
 # axis/angle in Euler angles representation
@@ -118,18 +134,15 @@ def rotmat2misor_axisangle(rotmat, Symmetry_group):
     
     return omega, Theta*180/np.pi
 
-
+@jit(nopython=True)
 def rotmat2misor_angle(rotmat, Symmetry_group):
-    rotmat_sym = [rotmat*x for x in Symmetry_group]
-    x_trace = [x.trace() for x in rotmat_sym]
-    min_idx = 0
-    
-    for i in range(len(x_trace)):
-        if x_trace[min_idx] < x_trace[i]:
-            min_idx = i
-    
-    Theta = np.arccos(((x_trace[min_idx]) - 1)/2)
-    
+    x_trace = 0
+    for i in range(len(Symmetry_group)):
+        x = np.dot(rotmat, Symmetry_group[i])
+        x_tr = x[0, 0] + x[1, 1] + x[2, 2]
+        if x_trace < x_tr:
+            x_trace = x_tr    
+    Theta = np.arccos(((x_trace) - 1)/2)    
     return Theta*180/np.pi
 
 
@@ -161,12 +174,17 @@ def get_IPF_color_vals(ang):
     return abs(r), abs(g), abs(b)
 
 if __name__ == '__main__':
-    Euler_angles = [0, 0, 0]
-    Euler_angles = [90, 45, 0]
-    Euler_angles = [149, 54, 45]
+    Euler_angles1 = [0, 0, 0]
+    Euler_angles2 = [90, 45, 0]
+    Euler_angles3 = [149, 54, 45]
     Euler_angles_sigma_3 = [63.43, 48.18, 333.4]
-    Euler_angles = [x*np.pi/180 for x in Euler_angles]
-    r,g,b = get_IPF_color_vals(Euler_angles)
-    print(Euler_angles)
-    ideal_or = euler2miller(Euler_angles)
-    print(ideal_or)
+    #Euler_angles = [x*np.pi/180 for x in Euler_angles]
+    #r,g,b = get_IPF_color_vals(Euler_angles)
+    #print(Euler_angles)
+    g1 = euler2rotmat(Euler_angles2)
+    g2 = euler2rotmat(Euler_angles3)
+    print(g1)
+    print(g2)
+    print(np.dot(g1,g2))
+    #ideal_or = euler2miller(Euler_angles)
+    #print(ideal_or)

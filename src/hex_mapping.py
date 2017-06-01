@@ -5,12 +5,11 @@ from matplotlib.collections import PolyCollection,LineCollection
 import matplotlib as mpl
 
 
-def get_verts(x,y,YSTEP):
+def get_verts(x, y, YSTEP):
     numpolys = len(x)
     centers = []
     for i in range(len(x)):
         centers.append([x[i],y[i]])
-    #centers = np.array(zip(x,y))
     numverts = 6
     offsets_x = []
     offsets_y = []
@@ -47,17 +46,17 @@ def get_verts(x,y,YSTEP):
     verts = np.swapaxes(verts, 0, 1)
     return verts
 
-def plot_hex_map(fig, ax, alpha_val, IQ,verts, title = 'IQ map'):
+def plot_hex_map(fig, ax, alpha_val, IQ, verts, title='IQ map'):
     z = np.array(IQ)
-    coll = PolyCollection(verts, array=z, cmap=mpl.cm.gray, edgecolors='none', antialiased = 1)
+    coll = PolyCollection(verts, array=z, cmap=mpl.cm.gray, edgecolors='none', antialiased=1)
     coll.set_alpha(alpha_val)
     ax.add_collection(coll)
 
-def plot_hex_rgb_map(x, y, IPF_r_g_b, title = 'IPF map'):
-    coll = PolyCollection(verts, array=None, facecolors = IPF_r_g_b, edgecolors='none', antialiased=1)
+def plot_hex_rgb_map(x, y, IPF_r_g_b, title='IPF map'):
+    coll = PolyCollection(verts, array=None, facecolors=IPF_r_g_b, edgecolors='none', antialiased=1)
     ax.add_collection(coll)
 
-def plot_line_map(xy_GB, ax, GB_color, GB_width, legend_name = 'GB'):
+def plot_line_map(xy_GB, ax, GB_color, GB_width, legend_name='GB'):
     line_segments = LineCollection(xy_GB,
                                    linewidths = GB_width,
                                    linestyles = 'solid',

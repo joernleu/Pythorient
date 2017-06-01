@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import numpy as np
-from crystallographic_calculations import axisangle2rotmat
+from src.crystallographic_calculations import axisangle2rotmat
 def get_ax_ang_CSL(Sigma_CSL, Bravais_lattice):
     if Bravais_lattice == 'fcc':
         CSL_data = {'3': [60, 1, 1, 1, 'coh_twin', 3],
@@ -55,47 +55,47 @@ def get_ax_ang_CSL(Sigma_CSL, Bravais_lattice):
 
 def get_symmetry_group(crystal_sys, CSL_ax=None):
     if crystal_sys == 'Cubic':
-        S1= np.matrix([[1, 0, 0],[0, 1, 0],[0, 0, 1]])
-        S2= np.matrix([[-1, 0, 0],[0, 1, 0],[0, 0, -1]])
-        S3= np.matrix([[-1, 0, 0],[0, -1, 0],[0, 0, 1]])
-        S4= np.matrix([[1, 0, 0],[0, -1, 0],[0, 0, -1]])
-        S5= np.matrix([[0, 1, 0],[0, 0, 1],[1, 0, 0]])
-        S6= np.matrix([[0, -1, 0],[0, 0, 1],[-1, 0, 0]])
-        S7= np.matrix([[0, -1, 0],[0, 0, -1],[1, 0, 0]])
-        S8= np.matrix([[0, 1, 0],[0, 0, -1],[-1, 0, 0]])
-        S9= np.matrix([[0, 0, 1],[1, 0, 0],[0, 1, 0]])
-        S10= np.matrix([[0, 0, -1],[1, 0, 0],[0, -1, 0]])
-        S11= np.matrix([[0, 0, -1],[-1, 0, 0],[0, 1, 0]])
-        S12= np.matrix([[0, 0, 1],[-1, 0, 0],[0, -1, 0]])
-        S13= np.matrix([[0, 0, -1],[0, -1, 0],[-1, 0, 0]])
-        S14= np.matrix([[0, 0, 1],[0, -1, 0],[1, 0, 0]])
-        S15= np.matrix([[0, 0, 1],[0, 1, 0],[-1, 0, 0]])
-        S16= np.matrix([[0, 0, -1],[0, 1, 0],[1, 0, 0]])
-        S17= np.matrix([[-1, 0, 0],[0, 0, -1],[0, -1, 0]])
-        S18= np.matrix([[1, 0, 0],[0, 0, -1],[0, 1, 0]])
-        S19= np.matrix([[1, 0, 0],[0, 0, 1],[0, -1, 0]])
-        S20= np.matrix([[-1, 0, 0],[0, 0, 1],[0, 1, 0]])
-        S21= np.matrix([[0, -1, 0],[-1, 0, 0],[0, 0, -1]])
-        S22= np.matrix([[0, 1, 0],[-1, 0, 0],[0, 0, 1]])
-        S23= np.matrix([[0, 1, 0],[1, 0, 0],[0, 0, -1]])
-        S24= np.matrix([[0, -1, 0],[1, 0, 0],[0, 0, 1]])
+        S1 = np.array([[1., 0., 0.],[0., 1., 0.],[0., 0., 1.]])
+        S2 = np.array([[-1., 0., 0.],[0., 1., 0.],[0., 0., -1.]])
+        S3 = np.array([[-1., 0., 0.],[0., -1., 0.],[0., 0., 1.]])
+        S4 = np.array([[1., 0., 0.],[0., -1., 0.],[0., 0., -1.]])
+        S5 = np.array([[0., 1., 0.],[0., 0., 1.],[1., 0., 0.]])
+        S6 = np.array([[0., -1., 0.],[0., 0., 1.],[-1., 0., 0.]])
+        S7 = np.array([[0., -1., 0.],[0., 0., -1.],[1., 0., 0.]])
+        S8 = np.array([[0., 1., 0.],[0., 0., -1.],[-1., 0., 0.]])
+        S9 = np.array([[0., 0., 1.],[1., 0., 0.],[0., 1., 0.]])
+        S10 = np.array([[0., 0., -1.],[1., 0., 0.],[0., -1., 0.]])
+        S11 = np.array([[0., 0., -1.],[-1., 0., 0.],[0., 1., 0.]])
+        S12 = np.array([[0., 0., 1.],[-1., 0., 0.],[0., -1., 0.]])
+        S13 = np.array([[0., 0., -1.],[0., -1., 0.],[-1., 0., 0.]])
+        S14 = np.array([[0., 0., 1.],[0., -1., 0.],[1., 0., 0.]])
+        S15 = np.array([[0., 0., 1.],[0., 1., 0.],[-1., 0., 0.]])
+        S16 = np.array([[0., 0., -1.],[0., 1., 0.],[1., 0., 0.]])
+        S17 = np.array([[-1., 0., 0.],[0., 0., -1.],[0., -1., 0.]])
+        S18 = np.array([[1., 0., 0.],[0., 0., -1.],[0., 1., 0.]])
+        S19 = np.array([[1., 0., 0.],[0., 0., 1.],[0., -1., 0.]])
+        S20 = np.array([[-1., 0., 0.],[0., 0., 1.],[0., 1., 0.]])
+        S21 = np.array([[0., -1., 0.],[-1., 0., 0.],[0., 0., -1.]])
+        S22 = np.array([[0., 1., 0.],[-1., 0., 0.],[0., 0., 1.]])
+        S23 = np.array([[0., 1., 0.],[1., 0., 0.],[0., 0., -1.]])
+        S24 = np.array([[0., -1., 0.],[1., 0., 0.],[0., 0., 1.]])
 
         if CSL_ax == '100':
-            return [S1, S2, S5, S6, S9, S10]
+            return np.array([S1, S2, S5, S6, S9, S10])
         
         if CSL_ax == '110':
-            return [S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12]
+            return np.array([S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12])
         
         if CSL_ax == '111':
-            return [S1, S2, S3, S4, S14, S15, S16, S17]
+            return np.array([S1, S2, S3, S4, S14, S15, S16, S17])
         
         if CSL_ax == 'coh_twin':
-            return [S1, S14, S15, S16]
+            return np.array([S1, S14, S15, S16])
         
         else:
-            return [S1, S2, S3, S4, S5, S6, S7, S8,
+            return np.array([S1, S2, S3, S4, S5, S6, S7, S8,
                      S9, S10, S11, S12, S13, S14, S15, S16,
-                     S17, S18, S19, S20, S21, S22, S23, S24]
+                     S17, S18, S19, S20, S21, S22, S23, S24])
 
 
 def get_sigma_variants_crit(Sigma_CSL, crit, crystal_sys, Bravais_lattice):
